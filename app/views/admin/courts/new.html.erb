@@ -1,0 +1,38 @@
+<div style="max-width: 600px; margin: 0 auto; font-family: sans-serif;">
+  <h1>Nueva Cancha</h1>
+
+  <%= form_with(model: [:admin, @court], local: true) do |form| %>
+    <% if @court.errors.any? %>
+      <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px;">
+        <h3><%= pluralize(@court.errors.count, "error") %> impidieron guardar la cancha:</h3>
+        <ul>
+          <% @court.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 15px;">
+      <%= form.label :name, "Nombre de la Cancha", style: "display: block; font-weight: bold;" %>
+      <%= form.text_field :name, style: "width: 100%; padding: 8px; box-sizing: border-box;" %>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <%= form.label :price, "Precio ($)", style: "display: block; font-weight: bold;" %>
+      <%= form.number_field :price, step: 0.01, style: "width: 100%; padding: 8px; box-sizing: border-box;" %>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <%= form.label :covered, "Techada", style: "font-weight: bold;" %>
+      <%= form.check_box :covered %>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <%= form.submit "Guardar Cancha", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 16px;" %>
+    </div>
+  <% end %>
+
+  <br>
+  <%= link_to 'Volver al listado', admin_courts_path, style: "text-decoration: none; color: #007bff;" %>
+</div>

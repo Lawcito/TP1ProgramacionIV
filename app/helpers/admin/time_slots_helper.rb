@@ -1,0 +1,2 @@
+module Admin::TimeSlotsHelper
+end

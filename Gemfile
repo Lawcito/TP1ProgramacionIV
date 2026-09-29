@@ -67,3 +67,5 @@ end
 
 gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 3.3"
+
+gem "fiddle", "~> 1.1"

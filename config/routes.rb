@@ -11,4 +11,20 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  namespace :admin do
+    root 'courts#index'
+    resources :courts
+    resources :time_slots
+    resources :reservations
+    resources :users
+  end
+
+  namespace :api do
+    namespace :v1 do
+      post 'login', to: 'sessions#create'
+      resources :courts, only: [:index, :show]
+      resources :reservations, only: [:index, :create, :destroy]
+    end
+  end
 end

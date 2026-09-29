@@ -1,0 +1,28 @@
+<h1>Administración de Canchas</h1>
+
+<p style="color: green"><%= notice %></p>
+
+<table border="1" cellpadding="10" cellspacing="0" style="width: 100%; text-align: left;">
+  <thead style="background-color: #f8f9fa;">
+    <tr>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Techada</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @courts.each do |court| %>
+      <tr>
+        <td><%= court.name %></td>
+        <td>$<%= court.price %></td>
+        <td><%= court.covered ? 'Sí' : 'No' %></td>
+        <td>
+          <%= button_to 'Eliminar', admin_court_path(court), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= link_to 'Crear Nueva Cancha', new_admin_court_path, style: "padding: 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;" %>
