@@ -11,8 +11,9 @@ module Api
 
       def create
         reservation = Reservation.new(reservation_params)
-        
+
         if reservation.save
+          ReservationMailer.reservation_created(reservation).deliver_later
           render json: reservation, status: :created
         else
           render json: { errors: reservation.errors.full_messages }, status: :unprocessable_entity
@@ -22,7 +23,7 @@ module Api
       def destroy
         reservation = Reservation.find(params[:id])
         reservation.destroy
-        render json: { message: 'Reservation successfully deleted' }, status: :ok
+        render json: { message: "Reservation successfully deleted" }, status: :ok
       end
 
       private

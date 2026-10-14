@@ -1,7 +1,6 @@
 module Api
   module V1
     class SessionsController < ApplicationController
-      # Omitir protección CSRF típica de rails para APIs puras con tokens
       skip_before_action :verify_authenticity_token, raise: false
 
       def create

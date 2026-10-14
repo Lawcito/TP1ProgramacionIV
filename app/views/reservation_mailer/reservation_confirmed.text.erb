@@ -1,0 +1,19 @@
+⚽ CANCHA TURNOS - FÚTBOL 5
+=====================================================
+
+¡Hola! Tu turno está confirmado.
+
+Detalles de la reserva:
+- N° de Reserva: #<%= @reservation.id %>
+- Cancha: <%= @court ? @court.name : "Cancha F5" %> (<%= @court&.covered ? "Techada" : "Al aire libre" %>)
+- Fecha: <%= @reservation.date ? @reservation.date.strftime("%d/%m/%Y") : "--" %>
+- Horario: <%= @time_slot ? "#{@time_slot.day_name} #{@time_slot.formatted_time_range}" : "--" %>
+- Tarifa: $<%= @court ? @court.price : "--" %> ARS
+
+Recomendaciones:
+• Llegar 10 minutos antes del inicio.
+• Pelotas y pecheras provistas en cancha.
+• Vestuarios y duchas a disposición.
+
+Cancha Turnos · Complejo Deportivo
+Av. del Deporte 1250 · Tel: +54 9 11 0000-0000

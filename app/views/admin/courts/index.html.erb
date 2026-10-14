@@ -1,28 +1,134 @@
-<h1>Administración de Canchas</h1>
+<% content_for :title, "Back Office · Administración de Canchas" %>
 
-<p style="color: green"><%= notice %></p>
+<div class="container">
+  <!-- STATS HEADER -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">⚽</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @courts.count %></span>
+        <span class="stat-label">Total Canchas</span>
+      </div>
+    </div>
 
-<table border="1" cellpadding="10" cellspacing="0" style="width: 100%; text-align: left;">
-  <thead style="background-color: #f8f9fa;">
-    <tr>
-      <th>Nombre</th>
-      <th>Precio</th>
-      <th>Techada</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @courts.each do |court| %>
-      <tr>
-        <td><%= court.name %></td>
-        <td>$<%= court.price %></td>
-        <td><%= court.covered ? 'Sí' : 'No' %></td>
-        <td>
-          <%= button_to 'Eliminar', admin_court_path(court), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } } %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<br>
-<%= link_to 'Crear Nueva Cancha', new_admin_court_path, style: "padding: 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;" %>
+    <div class="stat-card">
+      <div class="stat-icon">🏠</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @courts.where(covered: true).count %></span>
+        <span class="stat-label">Techadas (Cubiertas)</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">☀️</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @courts.where(covered: false).count %></span>
+        <span class="stat-label">Al Aire Libre</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">💵</div>
+      <div class="stat-details">
+        <% avg_price = @courts.any? ? @courts.average(:price).to_f : 0 %>
+        <span class="stat-number">$<%= number_with_precision(avg_price, precision: 0, delimiter: '.') %></span>
+        <span class="stat-label">Tarifa Promedio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURTS TABLE CARD -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Listado de Canchas de Fútbol 5</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+          Gestioná las canchas habilitadas, sus características de techado y tarifas horarias.
+        </p>
+      </div>
+      <div>
+        <%= link_to new_admin_court_path, class: "btn btn-primary btn-sm" do %>
+          <span>➕</span> Nueva Cancha
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card-body" style="padding: 0;">
+      <% if @courts.any? %>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cancha / Identificador</th>
+                <th>Tipo de Superficie</th>
+                <th>Tarifa por Hora</th>
+                <th>Fecha de Registro</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @courts.each do |court| %>
+                <tr>
+                  <td style="font-family: var(--font-display); font-weight: 700; color: var(--text-muted);">
+                    #<%= court.id %>
+                  </td>
+                  <td>
+                    <div class="court-name-cell">
+                      <% if court.photo.attached? %>
+                        <%= image_tag court.photo, style: "width: 44px; height: 32px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--blue-bell);" %>
+                      <% else %>
+                        <span class="court-ball-icon">⚽</span>
+                      <% end %>
+                      <span><%= court.name %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <% if court.covered %>
+                      <span class="badge badge-covered">
+                        <span>🏠</span> Techada
+                      </span>
+                    <% else %>
+                      <span class="badge badge-uncovered">
+                        <span>☀️</span> Al Aire Libre
+                      </span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <span class="price-tag">
+                      $<%= number_with_precision(court.price, precision: 2, delimiter: '.', separator: ',') %>
+                    </span>
+                  </td>
+                  <td style="font-size: 0.85rem; color: var(--text-muted);">
+                    <%= court.created_at.strftime("%d/%m/%Y %H:%M") %>
+                  </td>
+                  <td>
+                    <div class="actions-cell" style="justify-content: flex-end;">
+                      <%= link_to edit_admin_court_path(court), class: "btn btn-secondary btn-sm", title: "Editar" do %>
+                        <span>✏️</span> Editar
+                      <% end %>
+                      <%= button_to admin_court_path(court), method: :delete, form: { data: { turbo_confirm: "¿Estás seguro de eliminar la cancha '#{court.name}'?" } }, class: "btn btn-danger btn-sm", title: "Eliminar" do %>
+                        <span>🗑️</span> Eliminar
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div style="text-align: center; padding: 3rem 1.5rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚽</div>
+          <h3 style="color: var(--navy); margin-bottom: 0.35rem;">No hay canchas registradas</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+            Comenzá agregando la primera cancha de fútbol 5 del predio.
+          </p>
+          <%= link_to new_admin_court_path, class: "btn btn-primary" do %>
+            <span>➕</span> Crear Primera Cancha
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,2 +1,46 @@
-<h1>Admin::TimeSlots#new</h1>
-<p>Find me in app/views/admin/time_slots/new.html.erb</p>
+<% content_for :title, "Back Office · Nueva Franja Horaria" %>
+
+<div class="container">
+  <div class="form-card">
+    <div class="form-header">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--blue-bell); text-transform: uppercase; margin-bottom: 0.25rem;">
+        ⏱️ Configuración de Turnos
+      </div>
+      <h2 class="form-title">Nueva Franja Horaria</h2>
+      <p class="form-subtitle">Definí el día y las horas de inicio y fin para los turnos de juego.</p>
+    </div>
+
+    <%= form_with(model: [:admin, @time_slot], local: true) do |f| %>
+      <% if @time_slot.errors.any? %>
+        <div class="form-errors">
+          <h3>⚠️ No se pudo guardar el horario:</h3>
+          <ul>
+            <% @time_slot.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :day_of_week, "Día de la Semana", class: "form-label" %>
+        <%= f.select :day_of_week, [["Lunes", 1], ["Martes", 2], ["Miércoles", 3], ["Jueves", 4], ["Viernes", 5], ["Sábado", 6], ["Domingo", 7]], {}, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :start_time, "Hora de Inicio", class: "form-label" %>
+        <%= f.time_field :start_time, class: "form-control", required: true %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :end_time, "Hora de Fin", class: "form-label" %>
+        <%= f.time_field :end_time, class: "form-control", required: true %>
+      </div>
+
+      <div class="form-actions">
+        <%= link_to "Volver al listado", admin_time_slots_path, class: "btn btn-secondary" %>
+        <%= f.submit "Guardar Horario", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

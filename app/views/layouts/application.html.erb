@@ -1,29 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
-    <title><%= content_for(:title) || "Cancha Turnos" %></title>
+    <title><%= content_for(:title) || "Cancha Turnos · Alquiler de Canchas de Fútbol 5" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Alquiler de canchas de fútbol 5 con césped sintético e iluminación LED. Sistema de reservas y administración de turnos.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Cancha Turnos">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
+    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <%= yield :head %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <!-- UNIVERSAL TOP NAVBAR -->
+    <header class="site-navbar">
+      <div class="navbar-container">
+        <%= link_to root_path, class: "navbar-brand" do %>
+          <div class="brand-icon-box">⚽</div>
+          <div class="brand-text">
+            <span class="brand-title">CANCHA TURNOS</span>
+            <span class="brand-subtitle">Fútbol 5 Sintético</span>
+          </div>
+        <% end %>
+
+        <button class="nav-toggle" id="navToggleBtn" aria-label="Abrir menú de navegación">
+          ☰
+        </button>
+
+        <nav class="navbar-nav" id="mainNavLinks">
+          <%= link_to "Inicio", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+          <%= link_to "Canchas", "#{root_path}#canchas", class: "nav-link" %>
+          <%= link_to "Turnos & Horarios", "#{root_path}#turnos", class: "nav-link" %>
+          
+          <%= link_to admin_courts_path, class: "nav-btn-backoffice #{'active' if request.path.start_with?('/admin')}" do %>
+            <span>⚙️</span> Back Office
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <!-- BACK OFFICE HEADER & NAVIGATION TABS (Shown when in /admin) -->
+    <% if request.path.start_with?('/admin') %>
+      <div class="admin-header-bar">
+        <div class="admin-header-top">
+          <div>
+            <div class="admin-title-badge">
+              <span>🛡️</span> Panel de Control Administrativo
+            </div>
+            <h1 class="admin-heading">Back Office de Gestión</h1>
+            <p class="admin-subheading">Administrá canchas, turnos, reservas de clientes y usuarios del complejo.</p>
+          </div>
+          <div class="admin-quick-actions">
+            <%= link_to root_path, class: "btn btn-secondary btn-sm" do %>
+              <span>🌐</span> Ver Sitio Web
+            <% end %>
+            <% if controller_name == 'courts' && action_name == 'index' %>
+              <%= link_to new_admin_court_path, class: "btn btn-accent btn-sm" do %>
+                <span>➕</span> Nueva Cancha
+              <% end %>
+            <% elsif controller_name == 'time_slots' && action_name == 'index' %>
+              <%= link_to new_admin_time_slot_path, class: "btn btn-accent btn-sm" do %>
+                <span>➕</span> Nuevo Horario
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="admin-nav-tabs">
+          <%= link_to admin_courts_path, class: "admin-tab #{'active' if controller_name == 'courts'}" do %>
+            <span>⚽</span> Canchas
+            <span class="tab-badge"><%= Court.count %></span>
+          <% end %>
+          <%= link_to admin_time_slots_path, class: "admin-tab #{'active' if controller_name == 'time_slots'}" do %>
+            <span>⏱️</span> Franjas Horarias
+            <span class="tab-badge"><%= TimeSlot.count %></span>
+          <% end %>
+          <%= link_to admin_reservations_path, class: "admin-tab #{'active' if controller_name == 'reservations'}" do %>
+            <span>📅</span> Reservas
+            <span class="tab-badge"><%= Reservation.count %></span>
+          <% end %>
+          <%= link_to admin_users_path, class: "admin-tab #{'active' if controller_name == 'users'}" do %>
+            <span>👥</span> Usuarios
+            <span class="tab-badge"><%= User.count %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- FLASH MESSAGES -->
+    <main class="main-content">
+      <div class="container" style="padding-top: 1.5rem; padding-bottom: 0;">
+        <% if notice %>
+          <div class="flash-notice" role="alert">
+            <span>✅</span> <%= notice %>
+          </div>
+        <% end %>
+        <% if alert %>
+          <div class="flash-alert" role="alert">
+            <span>⚠️</span> <%= alert %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= yield %>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div>
+          <div class="navbar-brand" style="margin-bottom: 0.75rem;">
+            <div class="brand-icon-box">⚽</div>
+            <div class="brand-text">
+              <span class="brand-title">CANCHA TURNOS</span>
+              <span class="brand-subtitle">Fútbol 5 Sintético</span>
+            </div>
+          </div>
+          <p style="font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem; max-width: 320px;">
+            El mejor complejo deportivo para tus partidos de fútbol 5. Canchas cubiertas y al aire libre con iluminación LED y comodidades completas.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Navegación</h4>
+          <ul class="footer-links">
+            <li><%= link_to "Inicio", root_path %></li>
+            <li><%= link_to "Canchas disponibles", "#{root_path}#canchas" %></li>
+            <li><%= link_to "Horarios y Turnos", "#{root_path}#turnos" %></li>
+            <li><%= link_to "Servicios e Instalaciones", "#{root_path}#servicios" %></li>
+            <li><%= link_to "Panel Back Office", admin_courts_path %></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Horarios de Juego</h4>
+          <ul class="footer-links" style="font-size: 0.9rem;">
+            <li><strong>Lunes a Viernes:</strong> 18:00 a 00:00 hs</li>
+            <li><strong>Sábados y Domingos:</strong> 15:00 a 01:00 hs</li>
+            <li style="margin-top: 0.5rem; color: var(--sky-blue-light);">
+              📍 Av. Del Deporte 1250, Complejo Norte
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Contacto Rápido</h4>
+          <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">
+            Consultas o reservas para eventos, torneos o cumpleaños:
+          </p>
+          <a href="https://wa.me/5491100000000" target="_blank" rel="noopener" class="btn btn-accent btn-sm" style="display: inline-flex;">
+            <span>💬</span> WhatsApp Directo
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <%= Time.current.year %> Cancha Turnos. Todos los derechos reservados. TP1 Programación IV.</p>
+        <p style="color: var(--sky-blue-light);">Paleta de colores oficial aplicada</p>
+      </div>
+    </footer>
+
+    <!-- Vanilla JS for Mobile Nav Toggle -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var toggleBtn = document.getElementById('navToggleBtn');
+        var navLinks = document.getElementById('mainNavLinks');
+        if (toggleBtn && navLinks) {
+          toggleBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('show');
+          });
+        }
+      });
+    </script>
   </body>
 </html>

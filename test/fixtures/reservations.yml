@@ -1,15 +1,22 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  user: one
-  court: one
-  time_slot: one
-  date: 2026-09-29
+reserva_pendiente:
+  user: customer_user
+  court: cancha_a
+  time_slot: slot_manana
+  date: 2026-12-01
+  status: 0
+
+reserva_confirmada:
+  user: customer_user
+  court: cancha_b
+  time_slot: slot_tarde
+  date: 2026-12-02
   status: 1
 
-two:
-  user: two
-  court: two
-  time_slot: two
-  date: 2026-09-29
-  status: 1
+reserva_cancelada:
+  user: admin_user
+  court: cancha_a
+  time_slot: slot_tarde
+  date: 2026-12-03
+  status: 2

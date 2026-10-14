@@ -1,7 +1,7 @@
 module Admin
   class CourtsController < ApplicationController
     before_action :authenticate_admin!
-    
+
     def index
       @courts = Court.all
     end
@@ -13,22 +13,35 @@ module Admin
     def create
       @court = Court.new(court_params)
       if @court.save
-        redirect_to admin_courts_path, notice: 'La cancha fue creada exitosamente.'
+        redirect_to admin_courts_path, notice: "La cancha fue creada exitosamente."
       else
         render :new, status: :unprocessable_entity
+      end
+    end
+
+    def edit
+      @court = Court.find(params[:id])
+    end
+
+    def update
+      @court = Court.find(params[:id])
+      if @court.update(court_params)
+        redirect_to admin_courts_path, notice: "La cancha fue actualizada exitosamente."
+      else
+        render :edit, status: :unprocessable_entity
       end
     end
 
     def destroy
       @court = Court.find(params[:id])
       @court.destroy
-      redirect_to admin_courts_path, notice: 'La cancha fue eliminada.'
+      redirect_to admin_courts_path, notice: "La cancha fue eliminada."
     end
 
     private
 
     def court_params
-      params.require(:court).permit(:name, :price, :covered)
+      params.require(:court).permit(:name, :price, :covered, :photo)
     end
   end
 end

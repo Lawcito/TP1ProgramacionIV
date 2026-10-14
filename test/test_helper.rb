@@ -5,7 +5,8 @@ require "rails/test_help"
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors, with: :threads)
+    # SQLite3 does not support concurrent transactional fixtures; run tests serially.
+    parallelize(workers: 1)
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all

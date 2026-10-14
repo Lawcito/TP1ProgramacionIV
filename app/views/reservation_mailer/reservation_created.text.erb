@@ -1,0 +1,15 @@
+⚽ CANCHA TURNOS - FÚTBOL 5
+=====================================================
+
+Solicitud de Reserva Recibida
+
+Hemos registrado tu solicitud:
+- N° de Solicitud: #<%= @reservation.id %>
+- Cancha: <%= @court ? @court.name : "Cancha F5" %>
+- Fecha: <%= @reservation.date ? @reservation.date.strftime("%d/%m/%Y") : "--" %>
+- Horario: <%= @time_slot ? "#{@time_slot.day_name} #{@time_slot.formatted_time_range}" : "--" %>
+
+Una vez validada por administración, te enviaremos la confirmación.
+
+Cancha Turnos · Complejo Deportivo
+Av. del Deporte 1250 · Tel: +54 9 11 0000-0000

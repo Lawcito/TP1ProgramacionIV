@@ -1,2 +1,143 @@
-<h1>Admin::Reservations#index</h1>
-<p>Find me in app/views/admin/reservations/index.html.erb</p>
+<% content_for :title, "Back Office · Gestión de Reservas" %>
+
+<div class="container">
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @reservations.count %></span>
+        <span class="stat-label">Total Reservas</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @reservations.where(status: :pending).count %></span>
+        <span class="stat-label">Pendientes de Seña</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @reservations.where(status: :confirmed).count %></span>
+        <span class="stat-label">Confirmadas</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">❌</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @reservations.where(status: :cancelled).count %></span>
+        <span class="stat-label">Canceladas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESERVATIONS TABLE -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Historial y Control de Reservas</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+          Control de turnos asignados, estados de confirmación y clientes.
+        </p>
+      </div>
+    </div>
+
+    <div class="card-body" style="padding: 0;">
+      <% if @reservations.any? %>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cancha</th>
+                <th>Fecha de Juego</th>
+                <th>Horario / Franja</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @reservations.each do |res| %>
+                <tr>
+                  <td style="font-family: var(--font-display); font-weight: 700; color: var(--text-muted);">
+                    #<%= res.id %>
+                  </td>
+                  <td>
+                    <div class="court-name-cell">
+                      <span class="court-ball-icon">⚽</span>
+                      <strong><%= res.court&.name || "Cancha eliminada" %></strong>
+                    </div>
+                  </td>
+                  <td style="font-weight: 600; color: var(--text-dark);">
+                    <%= res.date ? res.date.strftime("%d/%m/%Y") : "--" %>
+                  </td>
+                  <td>
+                    <% if res.time_slot %>
+                      <span style="color: var(--persian-blue); font-weight: 600;">
+                        <%= res.time_slot.day_name %> <%= res.time_slot.formatted_time_range %>
+                      </span>
+                    <% else %>
+                      <span style="color: var(--text-muted);">Sin horario asignado</span>
+                    <% end %>
+                  </td>
+                  <td style="font-size: 0.9rem;">
+                    <%= res.user&.email || "Usuario ##{res.user_id}" %>
+                  </td>
+                  <td>
+                    <% case res.status %>
+                    <% when 'confirmed' %>
+                      <span class="badge badge-confirmed">
+                        <span>✓</span> Confirmada
+                      </span>
+                    <% when 'pending' %>
+                      <span class="badge badge-pending">
+                        <span>⏳</span> Pendiente
+                      </span>
+                    <% when 'cancelled' %>
+                      <span class="badge badge-cancelled">
+                        <span>✕</span> Cancelada
+                      </span>
+                    <% else %>
+                      <span class="badge"><%= res.status %></span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <div class="actions-cell" style="justify-content: flex-end;">
+                      <% if res.pending? %>
+                        <%= button_to admin_reservation_path(res, status: 'confirmed'), method: :patch, class: "btn btn-primary btn-sm", title: "Confirmar Reserva" do %>
+                          <span>✓</span> Confirmar
+                        <% end %>
+                      <% end %>
+                      <% unless res.cancelled? %>
+                        <%= button_to admin_reservation_path(res, status: 'cancelled'), method: :patch, class: "btn btn-secondary btn-sm", title: "Cancelar Reserva" do %>
+                          <span>✕</span> Cancelar
+                        <% end %>
+                      <% end %>
+                      <%= button_to admin_reservation_path(res), method: :delete, form: { data: { turbo_confirm: "¿Deseas eliminar permanentemente esta reserva?" } }, class: "btn btn-danger btn-sm", title: "Eliminar" do %>
+                        <span>🗑️</span>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div style="text-align: center; padding: 3rem 1.5rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📅</div>
+          <h3 style="color: var(--navy); margin-bottom: 0.35rem;">No hay reservas registradas</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Las reservas generadas por los usuarios o creadas mediante la API aparecerán en este panel.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

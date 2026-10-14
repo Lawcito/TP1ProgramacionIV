@@ -1,0 +1,199 @@
+<% content_for :title, "Cancha Turnos · Alquiler de Canchas de Fútbol 5" %>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-badge">
+      <span>⚽</span> Complejo Deportivo Fútbol 5
+    </div>
+    
+    <h1 class="hero-title">
+      Alquiler de Canchas de <span>Fútbol 5</span>
+    </h1>
+    
+    <p class="hero-lead">
+      Césped sintético de alta tecnología, canchas techadas y al aire libre con iluminación LED profesional. El espacio perfecto para tu partido semanal, torneo o tercer tiempo con amigos.
+    </p>
+
+    <div class="hero-cta-group">
+      <a href="#canchas" class="btn btn-accent btn-lg">
+        <span>⚽</span> Ver Canchas Disponibles
+      </a>
+      <%= link_to admin_courts_path, class: "btn btn-secondary btn-lg" do %>
+        <span>⚙️</span> Panel Back Office
+      <% end %>
+    </div>
+
+    <div class="hero-highlights">
+      <div class="hero-highlight-item">
+        <span>🏟️</span> Techadas y al aire libre
+      </div>
+      <div class="hero-highlight-item">
+        <span>💡</span> Iluminación LED nocturna
+      </div>
+      <div class="hero-highlight-item">
+        <span>🎽</span> Pelotas y pecheras incluidas
+      </div>
+      <div class="hero-highlight-item">
+        <span>🚿</span> Vestuarios con duchas
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CANCHAS DISPONIBLES SECTION -->
+<section id="canchas" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">Nuestras Instalaciones</span>
+      <h2 class="section-title">Canchas Disponibles</h2>
+      <p class="section-desc">
+        Elegí la cancha que mejor se adapte al estilo de juego de tu equipo.
+      </p>
+    </div>
+
+    <% if @courts.any? %>
+      <div class="courts-grid">
+        <% @courts.each_with_index do |court, index| %>
+          <div class="court-card">
+            <div class="court-card-banner">
+              <% if court.photo.attached? %>
+                <%= image_tag court.photo, style: "width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;" %>
+                <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 14, 82, 0.2), rgba(14, 14, 82, 0.6));"></div>
+              <% else %>
+                <div class="court-pitch-lines">
+                  <div class="court-center-circle"></div>
+                </div>
+              <% end %>
+              <div class="court-card-badge-pos">
+                <% if court.covered %>
+                  <span class="badge badge-covered">
+                    <span>🏠</span> Techada
+                  </span>
+                <% else %>
+                  <span class="badge badge-uncovered">
+                    <span>☀️</span> Al Aire Libre
+                  </span>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="court-card-content">
+              <h3 class="court-card-title"><%= court.name %></h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Césped sintético monofilamento de 50mm con amortiguación de caucho granulado.
+              </p>
+
+              <ul class="court-card-specs">
+                <li>
+                  <span class="spec-check">✓</span> Medidas reglamentarias Fútbol 5 (20 x 30m)
+                </li>
+                <li>
+                  <span class="spec-check">✓</span> 4 Torres de reflectores LED de alta potencia
+                </li>
+                <li>
+                  <span class="spec-check">✓</span> Incluye pelota N° 4 y pecheras de dos colores
+                </li>
+                <li>
+                  <span class="spec-check">✓</span>
+                  <%= court.covered ? "100% protegida contra lluvia y sol" : "Cancha abierta para días despejados" %>
+                </li>
+              </ul>
+
+              <div class="court-card-footer">
+                <div class="court-price-box">
+                  <span class="court-price-label">Tarifa por turno (60 min)</span>
+                  <span class="court-price-val">$<%= number_with_precision(court.price, precision: 0, delimiter: '.') %></span>
+                </div>
+
+                <%= link_to court_turnos_path(court), class: "btn btn-primary btn-sm" do %>
+                  <span>📅</span> Ver Turnos y Reservar
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">⚽</div>
+        <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Aún no hay canchas registradas</h3>
+        <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 1.5rem;">
+          Ingresá al Back Office para dar de alta las canchas de fútbol 5 con sus precios y características.
+        </p>
+        <div>
+          <%= link_to new_admin_court_path, class: "btn btn-primary" do %>
+            <span>➕</span> Agregar Cancha en el Back Office
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- TURNOS & MODALIDAD DE JUEGO -->
+<section id="turnos" class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">Disponibilidad & Anticipación</span>
+      <h2 class="section-title">Horarios y Turnos de Juego</h2>
+      <p class="section-desc">
+        El complejo funciona en intervalos continuos de 1 hora de 10:00 AM a 01:00 AM del día siguiente. Podés consultar y reservar turnos para el día de hoy y con hasta 5 días de anticipación.
+      </p>
+    </div>
+
+    <div class="stats-grid" style="margin-bottom: 1.5rem;">
+      <div class="stat-card">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-details">
+          <span class="stat-number">60 min</span>
+          <span class="stat-label">Intervalos por Turno</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🕒</div>
+        <div class="stat-details">
+          <span class="stat-number">10 a 01 hs</span>
+          <span class="stat-label">Franja Diaria Completa</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-details">
+          <span class="stat-number">Hasta +5 Días</span>
+          <span class="stat-label">Reserva Anticipada</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔴 🟢</div>
+        <div class="stat-details">
+          <span class="stat-number">En Vivo</span>
+          <span class="stat-label">Libres / Reservados</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALL TO ACTION BANNER -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="cta-banner">
+      <h2 class="cta-banner-title">¿Listo para armar el partido de la semana?</h2>
+      <p class="cta-banner-text">
+        Consultá la disponibilidad de canchas o accedé al panel administrativo para gestionar turnos y reservas en tiempo real.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+        <a href="#canchas" class="btn btn-accent btn-lg">
+          <span>⚽</span> Reservar una Cancha
+        </a>
+        <%= link_to admin_courts_path, class: "btn btn-secondary btn-lg" do %>
+          <span>⚙️</span> Ingresar al Back Office
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

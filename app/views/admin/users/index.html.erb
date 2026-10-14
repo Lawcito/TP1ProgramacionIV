@@ -1,2 +1,108 @@
-<h1>Admin::Users#index</h1>
-<p>Find me in app/views/admin/users/index.html.erb</p>
+<% content_for :title, "Back Office · Gestión de Usuarios" %>
+
+<div class="container">
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @users.count %></span>
+        <span class="stat-label">Total Usuarios</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🛡️</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @users.where(role: :admin).count %></span>
+        <span class="stat-label">Administradores</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⚽</div>
+      <div class="stat-details">
+        <span class="stat-number"><%= @users.where(role: :customer).count %></span>
+        <span class="stat-label">Clientes / Jugadores</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- USERS TABLE -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Usuarios Registrados en el Sistema</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+          Control de acceso y roles de usuarios (administradores y clientes).
+        </p>
+      </div>
+    </div>
+
+    <div class="card-body" style="padding: 0;">
+      <% if @users.any? %>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Correo Electrónico</th>
+                <th>Rol Asignado</th>
+                <th>Reservas Realizadas</th>
+                <th>Fecha de Registro</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
+                <tr>
+                  <td style="font-family: var(--font-display); font-weight: 700; color: var(--text-muted);">
+                    #<%= user.id %>
+                  </td>
+                  <td>
+                    <div style="font-weight: 700; color: var(--deep-twilight); display: flex; align-items: center; gap: 0.5rem;">
+                      <span><%= user.admin? ? "🛡️" : "👤" %></span>
+                      <span><%= user.email %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <% if user.admin? %>
+                      <span class="badge badge-admin">
+                        <span>🛡️</span> Administrador
+                      </span>
+                    <% else %>
+                      <span class="badge badge-customer">
+                        <span>👤</span> Cliente
+                      </span>
+                    <% end %>
+                  </td>
+                  <td style="font-weight: 600; color: var(--navy);">
+                    <%= user.reservations.count %> reservas
+                  </td>
+                  <td style="font-size: 0.85rem; color: var(--text-muted);">
+                    <%= user.created_at.strftime("%d/%m/%Y %H:%M") %>
+                  </td>
+                  <td>
+                    <div class="actions-cell" style="justify-content: flex-end;">
+                      <%= button_to admin_user_path(user), method: :delete, form: { data: { turbo_confirm: "¿Estás seguro de eliminar al usuario #{user.email}?" } }, class: "btn btn-danger btn-sm" do %>
+                        <span>🗑️</span> Eliminar
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div style="text-align: center; padding: 3rem 1.5rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">👥</div>
+          <h3 style="color: var(--navy); margin-bottom: 0.35rem;">No hay usuarios registrados</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Los usuarios registrados aparecerán en esta sección.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

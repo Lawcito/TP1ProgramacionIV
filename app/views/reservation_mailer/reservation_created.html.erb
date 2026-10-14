@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fb;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #2d3748;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 30px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 15px rgba(14, 14, 82, 0.08);
+      }
+      .email-header {
+        background: linear-gradient(135deg, #0e0e52 0%, #150578 50%, #192bc2 100%);
+        color: #ffffff;
+        padding: 30px 25px;
+        text-align: center;
+      }
+      .email-logo {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 5px;
+      }
+      .email-sublogo {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #78c0e0;
+        letter-spacing: 2px;
+        font-weight: 700;
+      }
+      .email-body {
+        padding: 30px 25px;
+      }
+      .status-pill {
+        display: inline-block;
+        background-color: #fffbeb;
+        color: #92400e;
+        border: 1px solid #fde68a;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+      }
+      .email-title {
+        color: #0e0e52;
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0 0 10px 0;
+      }
+      .email-text {
+        color: #5e6e82;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 25px 0;
+      }
+      .details-card {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #449dd1;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+      }
+      .detail-label {
+        color: #5e6e82;
+        font-weight: 600;
+      }
+      .detail-value {
+        color: #0e0e52;
+        font-weight: 700;
+      }
+      .email-footer {
+        background-color: #0e0e52;
+        color: #ffffff;
+        opacity: 0.9;
+        padding: 20px 25px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <div class="email-logo">⚽ CANCHA TURNOS</div>
+        <div class="email-sublogo">Fútbol 5 Sintético</div>
+      </div>
+
+      <div class="email-body">
+        <div class="status-pill">
+          ⏳ Solicitud Recibida
+        </div>
+
+        <h1 class="email-title">Hemos recibido tu solicitud de reserva</h1>
+        <p class="email-text">
+          Tu solicitud fue registrada en el sistema. Una vez acreditada la seña o validado el turno por el administrador, recibirás la confirmación definitiva.
+        </p>
+
+        <div class="details-card">
+          <table width="100%" cellpadding="6" cellspacing="0">
+            <tr>
+              <td class="detail-label">Cancha solicitada:</td>
+              <td class="detail-value" align="right">
+                ⚽ <%= @court ? @court.name : "Cancha F5" %>
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-label">Fecha:</td>
+              <td class="detail-value" align="right">
+                📅 <%= @reservation.date ? @reservation.date.strftime("%d/%m/%Y") : "--" %>
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-label">Horario:</td>
+              <td class="detail-value" align="right">
+                ⏱️ <%= @time_slot ? "#{@time_slot.day_name} #{@time_slot.formatted_time_range}" : "--" %>
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-label">N° de Solicitud:</td>
+              <td class="detail-value" align="right">
+                #<%= @reservation.id %>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="email-footer">
+        <p style="margin: 0 0 5px 0;"><strong>Cancha Turnos · Complejo Deportivo</strong></p>
+        <p style="margin: 0; color: #78c0e0;">Av. del Deporte 1250 · Tel / WhatsApp: +54 9 11 0000-0000</p>
+      </div>
+    </div>
+  </body>
+</html>

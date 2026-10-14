@@ -1,2 +1,15 @@
-<h1>Admin::Courts#edit</h1>
-<p>Find me in app/views/admin/courts/edit.html.erb</p>
+<% content_for :title, "Back Office · Editar Cancha" %>
+
+<div class="container">
+  <div class="form-card">
+    <div class="form-header">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--blue-bell); text-transform: uppercase; margin-bottom: 0.25rem;">
+        ⚽ Modificación de Instalación
+      </div>
+      <h2 class="form-title">Editar Cancha: <%= @court.name %></h2>
+      <p class="form-subtitle">Actualizá el nombre, precio por hora o condición de techado de la cancha.</p>
+    </div>
+
+    <%= render "form", court: @court %>
+  </div>
+</div>
