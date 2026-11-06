@@ -3,6 +3,7 @@ module Admin
     before_action :authenticate_admin!
 
     def index
+      Reservation.where(status: nil).update_all(status: 0)
       @reservations = Reservation.includes(:user, :court, :time_slot).order(date: :desc, created_at: :desc)
     end
 
@@ -11,7 +12,11 @@ module Admin
       if params[:status].present? && Reservation.statuses.key?(params[:status])
         @reservation.update(status: params[:status])
         if @reservation.confirmed?
-          ReservationMailer.reservation_confirmed(@reservation).deliver_later
+          begin
+            ReservationMailer.reservation_confirmed(@reservation).deliver_later
+          rescue StandardError => e
+            Rails.logger.error("Error enviando email de confirmación: #{e.message}")
+          end
         end
         redirect_to admin_reservations_path, notice: "La reserva ##{@reservation.id} ahora está #{@reservation.status}."
       else

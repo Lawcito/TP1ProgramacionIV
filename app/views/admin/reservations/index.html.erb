@@ -14,8 +14,8 @@
     <div class="stat-card">
       <div class="stat-icon">⏳</div>
       <div class="stat-details">
-        <span class="stat-number"><%= @reservations.where(status: :pending).count %></span>
-        <span class="stat-label">Pendientes de Seña</span>
+        <span class="stat-number"><%= @reservations.where(status: [:pending, nil]).count %></span>
+        <span class="stat-label">Pendientes</span>
       </div>
     </div>
 
@@ -95,7 +95,7 @@
                       <span class="badge badge-confirmed">
                         <span>✓</span> Confirmada
                       </span>
-                    <% when 'pending' %>
+                    <% when 'pending', nil %>
                       <span class="badge badge-pending">
                         <span>⏳</span> Pendiente
                       </span>
@@ -109,9 +109,9 @@
                   </td>
                   <td>
                     <div class="actions-cell" style="justify-content: flex-end;">
-                      <% if res.pending? %>
-                        <%= button_to admin_reservation_path(res, status: 'confirmed'), method: :patch, class: "btn btn-primary btn-sm", title: "Confirmar Reserva" do %>
-                          <span>✓</span> Confirmar
+                      <% unless res.confirmed? %>
+                        <%= button_to admin_reservation_path(res, status: 'confirmed'), method: :patch, class: "btn btn-primary btn-sm", title: "Aceptar / Confirmar Reserva" do %>
+                          <span>✓</span> Aceptar
                         <% end %>
                       <% end %>
                       <% unless res.cancelled? %>

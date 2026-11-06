@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <title><%= content_for(:title) || "Cancha Turnos · Alquiler de Canchas de Fútbol 5" %></title>
+    <title><%= content_for(:title) || "Back Office · Cancha Turnos" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="Alquiler de canchas de fútbol 5 con césped sintético e iluminación LED. Sistema de reservas y administración de turnos.">
+    <meta name="description" content="Panel de administración de turnos y canchas.">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Cancha Turnos">
+    <meta name="application-name" content="Cancha Turnos - Back Office">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -27,14 +27,14 @@
   </head>
 
   <body>
-    <!-- UNIVERSAL TOP NAVBAR -->
+    <!-- TOP NAVBAR BACK OFFICE -->
     <header class="site-navbar">
       <div class="navbar-container">
         <%= link_to root_path, class: "navbar-brand" do %>
           <div class="brand-icon-box">⚽</div>
           <div class="brand-text">
             <span class="brand-title">CANCHA TURNOS</span>
-            <span class="brand-subtitle">Fútbol 5 Sintético</span>
+            <span class="brand-subtitle">Back Office</span>
           </div>
         <% end %>
 
@@ -43,64 +43,64 @@
         </button>
 
         <nav class="navbar-nav" id="mainNavLinks">
-          <%= link_to "Inicio", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
-          <%= link_to "Canchas", "#{root_path}#canchas", class: "nav-link" %>
-          <%= link_to "Turnos & Horarios", "#{root_path}#turnos", class: "nav-link" %>
-          
-          <%= link_to admin_courts_path, class: "nav-btn-backoffice #{'active' if request.path.start_with?('/admin')}" do %>
-            <span>⚙️</span> Back Office
+          <%= link_to admin_courts_path, class: "nav-link #{'active' if controller_name == 'courts'}" do %>
+            ⚽ Canchas
+          <% end %>
+          <%= link_to admin_time_slots_path, class: "nav-link #{'active' if controller_name == 'time_slots'}" do %>
+            ⏱️ Franjas Horarias
+          <% end %>
+          <%= link_to admin_reservations_path, class: "nav-link #{'active' if controller_name == 'reservations'}" do %>
+            📅 Reservas
+          <% end %>
+          <%= link_to admin_users_path, class: "nav-link #{'active' if controller_name == 'users'}" do %>
+            👥 Usuarios
           <% end %>
         </nav>
       </div>
     </header>
 
-    <!-- BACK OFFICE HEADER & NAVIGATION TABS (Shown when in /admin) -->
-    <% if request.path.start_with?('/admin') %>
-      <div class="admin-header-bar">
-        <div class="admin-header-top">
-          <div>
-            <div class="admin-title-badge">
-              <span>🛡️</span> Panel de Control Administrativo
-            </div>
-            <h1 class="admin-heading">Back Office de Gestión</h1>
-            <p class="admin-subheading">Administrá canchas, turnos, reservas de clientes y usuarios del complejo.</p>
+    <!-- BACK OFFICE HEADER & NAVIGATION TABS -->
+    <div class="admin-header-bar">
+      <div class="admin-header-top">
+        <div>
+          <div class="admin-title-badge">
+            <span>🛡️</span> Panel de Control Administrativo
           </div>
-          <div class="admin-quick-actions">
-            <%= link_to root_path, class: "btn btn-secondary btn-sm" do %>
-              <span>🌐</span> Ver Sitio Web
-            <% end %>
-            <% if controller_name == 'courts' && action_name == 'index' %>
-              <%= link_to new_admin_court_path, class: "btn btn-accent btn-sm" do %>
-                <span>➕</span> Nueva Cancha
-              <% end %>
-            <% elsif controller_name == 'time_slots' && action_name == 'index' %>
-              <%= link_to new_admin_time_slot_path, class: "btn btn-accent btn-sm" do %>
-                <span>➕</span> Nuevo Horario
-              <% end %>
-            <% end %>
-          </div>
+          <h1 class="admin-heading">Back Office de Gestión</h1>
+          <p class="admin-subheading">Administrá canchas, turnos, reservas de clientes y usuarios del complejo.</p>
         </div>
-
-        <div class="admin-nav-tabs">
-          <%= link_to admin_courts_path, class: "admin-tab #{'active' if controller_name == 'courts'}" do %>
-            <span>⚽</span> Canchas
-            <span class="tab-badge"><%= Court.count %></span>
-          <% end %>
-          <%= link_to admin_time_slots_path, class: "admin-tab #{'active' if controller_name == 'time_slots'}" do %>
-            <span>⏱️</span> Franjas Horarias
-            <span class="tab-badge"><%= TimeSlot.count %></span>
-          <% end %>
-          <%= link_to admin_reservations_path, class: "admin-tab #{'active' if controller_name == 'reservations'}" do %>
-            <span>📅</span> Reservas
-            <span class="tab-badge"><%= Reservation.count %></span>
-          <% end %>
-          <%= link_to admin_users_path, class: "admin-tab #{'active' if controller_name == 'users'}" do %>
-            <span>👥</span> Usuarios
-            <span class="tab-badge"><%= User.count %></span>
+        <div class="admin-quick-actions">
+          <% if controller_name == 'courts' && action_name == 'index' %>
+            <%= link_to new_admin_court_path, class: "btn btn-accent btn-sm" do %>
+              <span>➕</span> Nueva Cancha
+            <% end %>
+          <% elsif controller_name == 'time_slots' && action_name == 'index' %>
+            <%= link_to new_admin_time_slot_path, class: "btn btn-accent btn-sm" do %>
+              <span>➕</span> Nuevo Horario
+            <% end %>
           <% end %>
         </div>
       </div>
-    <% end %>
+
+      <div class="admin-nav-tabs">
+        <%= link_to admin_courts_path, class: "admin-tab #{'active' if controller_name == 'courts'}" do %>
+          <span>⚽</span> Canchas
+          <span class="tab-badge"><%= Court.count %></span>
+        <% end %>
+        <%= link_to admin_time_slots_path, class: "admin-tab #{'active' if controller_name == 'time_slots'}" do %>
+          <span>⏱️</span> Franjas Horarias
+          <span class="tab-badge"><%= TimeSlot.count %></span>
+        <% end %>
+        <%= link_to admin_reservations_path, class: "admin-tab #{'active' if controller_name == 'reservations'}" do %>
+          <span>📅</span> Reservas
+          <span class="tab-badge"><%= Reservation.count %></span>
+        <% end %>
+        <%= link_to admin_users_path, class: "admin-tab #{'active' if controller_name == 'users'}" do %>
+          <span>👥</span> Usuarios
+          <span class="tab-badge"><%= User.count %></span>
+        <% end %>
+      </div>
+    </div>
 
     <!-- FLASH MESSAGES -->
     <main class="main-content">
@@ -120,58 +120,23 @@
       <%= yield %>
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER BACK OFFICE -->
     <footer class="site-footer">
-      <div class="footer-container">
-        <div>
-          <div class="navbar-brand" style="margin-bottom: 0.75rem;">
-            <div class="brand-icon-box">⚽</div>
-            <div class="brand-text">
-              <span class="brand-title">CANCHA TURNOS</span>
-              <span class="brand-subtitle">Fútbol 5 Sintético</span>
-            </div>
+      <div class="footer-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="navbar-brand">
+          <div class="brand-icon-box">⚽</div>
+          <div class="brand-text">
+            <span class="brand-title">CANCHA TURNOS</span>
+            <span class="brand-subtitle">Panel de Control</span>
           </div>
-          <p style="font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem; max-width: 320px;">
-            El mejor complejo deportivo para tus partidos de fútbol 5. Canchas cubiertas y al aire libre con iluminación LED y comodidades completas.
-          </p>
         </div>
-
-        <div>
-          <h4 class="footer-col-title">Navegación</h4>
-          <ul class="footer-links">
-            <li><%= link_to "Inicio", root_path %></li>
-            <li><%= link_to "Canchas disponibles", "#{root_path}#canchas" %></li>
-            <li><%= link_to "Horarios y Turnos", "#{root_path}#turnos" %></li>
-            <li><%= link_to "Servicios e Instalaciones", "#{root_path}#servicios" %></li>
-            <li><%= link_to "Panel Back Office", admin_courts_path %></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="footer-col-title">Horarios de Juego</h4>
-          <ul class="footer-links" style="font-size: 0.9rem;">
-            <li><strong>Lunes a Viernes:</strong> 18:00 a 00:00 hs</li>
-            <li><strong>Sábados y Domingos:</strong> 15:00 a 01:00 hs</li>
-            <li style="margin-top: 0.5rem; color: var(--sky-blue-light);">
-              📍 Av. Del Deporte 1250, Complejo Norte
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="footer-col-title">Contacto Rápido</h4>
-          <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">
-            Consultas o reservas para eventos, torneos o cumpleaños:
-          </p>
-          <a href="https://wa.me/5491100000000" target="_blank" rel="noopener" class="btn btn-accent btn-sm" style="display: inline-flex;">
-            <span>💬</span> WhatsApp Directo
-          </a>
-        </div>
+        <p style="color: var(--sky-blue-light); font-size: 0.85rem; margin: 0;">
+          Back Office Exclusivo para Administración · TP2 Programación IV
+        </p>
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; <%= Time.current.year %> Cancha Turnos. Todos los derechos reservados. TP1 Programación IV.</p>
-        <p style="color: var(--sky-blue-light);">Paleta de colores oficial aplicada</p>
+        <p>&copy; <%= Time.current.year %> Cancha Turnos. Todos los derechos reservados.</p>
       </div>
     </footer>
 

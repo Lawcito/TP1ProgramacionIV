@@ -5,12 +5,24 @@ module Api
 
       def index
         courts = Court.all
-        render json: courts, status: :ok
+        render json: courts.map { |c| court_json(c) }, status: :ok
       end
 
       def show
         court = Court.find(params[:id])
-        render json: court, status: :ok
+        render json: court_json(court), status: :ok
+      end
+
+      private
+
+      def court_json(court)
+        {
+          id: court.id,
+          name: court.name,
+          price: court.price,
+          covered: court.covered,
+          photo_url: court.photo.attached? ? url_for(court.photo) : nil
+        }
       end
     end
   end
